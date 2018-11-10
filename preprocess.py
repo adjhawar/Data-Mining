@@ -3,7 +3,7 @@ import numpy as np
 
 #removing the null rows
 def remove_null():	
-	f="responses.csv"
+	f="replaced_responses.csv"
 	df=pd.read_csv(f)
 	df1=df.dropna(axis=0)
 	df1.to_csv("non_null_responses.csv",index=False)
@@ -24,10 +24,13 @@ def map_values():
 		df[x]=df[x].replace(dic)
 	df.to_csv(f,index=False)
 
-map_values()
-remove_null()
-'''
-c=df1.corr().abs()
+#map_values()
+#remove_null()
+
+df=pd.read_csv("non_null_responses.csv")
+print(df.columns)
+print(df.info())
+c=df.corr()
 s = c.unstack()
 so = s.sort_values(kind="quicksort")
 values = [0 if i<0.5 else i for i in so ]
@@ -36,4 +39,4 @@ values = [0 if i==1.0 else i for i in m1]
 m2=list(filter(lambda a:a !=0,values))
 print(len(m1))
 print(len(m2))
-print(so[-len(m1):len(m2)-len(m1)])'''
+print(so[-len(m1):len(m2)-len(m1)])
