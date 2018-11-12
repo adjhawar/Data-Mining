@@ -17,6 +17,4 @@ Filling missing values
 The most correlated columns were found out using 0.5 as the threshold. The value to be used in case of eprfect correlation was multiplied with the correlation factor and then rounded up to the nearest integer in most cases of ordinal data.
 For handling continuous data like :"Age","Height" and "Weight", normalisation was used before multiplying by the correlation
 In case of binary data like "Gender", the distribution was found out in the each group and the value was filled using a biased bernoulli distribution.
-###To be done
-Filling in the other missing values for the case of ordinal data and poor correlation
-
+The uncorrelated ordinal values are similarly filled as the binary categories.

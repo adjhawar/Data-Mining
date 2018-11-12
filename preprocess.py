@@ -1,6 +1,9 @@
 import pandas as pd
 import numpy as np
 import math
+import missingno as msno
+import matplotlib.pyplot as plt
+
 #removing the null rows
 def remove_null():	
 	f="replaced_responses.csv"
@@ -27,12 +30,15 @@ def map_values():
 		df[x]=df[x].replace(dic)
 	df.to_csv(f,index=False)
 
-def fill_binary(df):
+#fill ordinal missing values
+def fill_ordinal(df):
 	missing = df.isnull()
-	x1=(df==0).sum(axis=0)
-	x2=(df==1).sum(axis=0)
-	a=[0,1]
-	p=[x1/(x1+x2),x2/(x1+x2)]
+	p=[]
+	a=[0,1,2,3,4,5]
+	for x in a:
+		p.append((df==x).sum(axis=0))
+	s=sum(p)
+	p=p/s
 	df.loc[missing]=np.random.choice(a, size=len(df[missing]),p=p)
 	return df
 
@@ -66,22 +72,19 @@ def to_fill(df,col1,col2):
 		min=df[col1].min()
 		temp[col1]=temp.groupby(col2)[col1].apply(lambda x:x.fillna(math.ceil((x.mean()-min)*corr+min)))
 		temp=df.dropna(subset=[col1])
-		temp[col2]=temp.groupby(col1)[col2].apply(lambda x:fill_binary(x))
+		temp[col2]=temp.groupby(col1)[col2].apply(lambda x:fill_ordinal(x))
 		df.update(temp)
 	return df
 
+#fill uncorrelated columns
 def fill_uncorr(df):
 	cols=df.columns[df.isna().any()].tolist()
 	for c in cols:
 		n=len(df[c].unique())
-		if n==3:
-			df[c]=fill_binary(df[c])
-		elif n>6:
+		if n>6:
 			df[c]=df[c].fillna(round(df[c].mean()))
 		else:
-			print("Ordinal",c)
-	cols=df.columns[df.isna().any()].tolist()
-	print(cols)
+			df[c]=fill_ordinal(df[c])
 	return df
 
 #find columns whose correlation is greater than 0.5
@@ -101,16 +104,11 @@ def fill_corr_cols():
 		col2=s1.index[i][1]
 		df=to_fill(df,col1,col2)
 	df=fill_uncorr(df)
-	
-def missing_values():
-	f="responses.csv"
-	df=pd.read_csv(f)
-	cols=df.columns
+	df.to_csv("filled_responses.csv",index=False)
 
 #map_values()
 #remove_null()
-fill_corr_cols()
-#missing_values()
+#fill_corr_cols()
 #df=pd.read_csv("non_null_responses.csv")
 '''music=df.iloc[:,0:19]
 movie=df.iloc[:,19:32]
