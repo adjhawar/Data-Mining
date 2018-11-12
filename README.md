@@ -13,3 +13,10 @@ The some data values contain String values. Those values were mapped to integers
 10. Village - town {'village': 0, 'city': 1}
 11. House - block of flats {'block of flats': 0, 'house/bungalow': 1}
 
+Filling missing values
+The most correlated columns were found out using 0.5 as the threshold. The value to be used in case of eprfect correlation was multiplied with the correlation factor and then rounded up to the nearest integer in most cases of ordinal data.
+For handling continuous data like :"Age","Height" and "Weight", normalisation was used before multiplying by the correlation
+In case of binary data like "Gender", the distribution was found out in the each group and the value was filled using a biased bernoulli distribution.
+###To be done
+Filling in the other missing values for the case of ordinal data and poor correlation
+
