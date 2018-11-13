@@ -1,20 +1,15 @@
 import pandas as pd
 import numpy as np
-import math
 import missingno as msno
+import seaborn as sns
 import matplotlib.pyplot as plt
+import warnings
+import math
 
-#removing the null rows
-def remove_null():	
-	f="replaced_responses.csv"
-	df=pd.read_csv(f)
-	df1=df.dropna(axis=0)
-	df1.to_csv("non_null_responses.csv",index=False)
-
-#map strings to ordinal numbers
-def map_values():
-	f="replaced_responses.csv"
-	df=pd.read_csv("responses.csv")
+warnings.filterwarnings("ignore")
+#map strings to ordinal numbers and remove rows containing null values in "Gender" column
+def map_values(df):
+	df.dropna(inplace=True,axis=0,subset=["Gender"])
 	l=df.select_dtypes(include=['object']).columns
 	for x in l:
 		unique=df[x].unique()
@@ -28,7 +23,12 @@ def map_values():
 			l=[i for i in range(len(unique))]
 		dic=dict(zip(unique,l))
 		df[x]=df[x].replace(dic)
-	df.to_csv(f,index=False)
+	df.to_csv("replaced_responses.csv",index=False)
+
+def plots(so,flag):
+	if flag==0:
+		so.plot(kind='bar',color='slateblue')
+		plt.show()
 
 #fill ordinal missing values
 def fill_ordinal(df):
@@ -43,36 +43,31 @@ def fill_ordinal(df):
 	return df
 
 def to_fill(df,col1,col2):
-	corr=df[col1].corr(df[col2])
-	if col1!="Weight" and col1!="Height" and col1!="Gender" and col1!="Education" and col1!="Age":
-		temp=df.dropna(subset=[col1])
-		temp[col2]=temp.groupby(col1)[col2].apply(lambda x:x.fillna(math.ceil(x.name*corr)))
+	if col1=="Gender":
+		df[col2]=df.groupby(col1)[col2].apply(lambda x:x.fillna(math.ceil(x.mean())))
+	elif col2=="Gender":
+		df[col1]=df.groupby(col2)[col1].apply(lambda x:x.fillna(math.ceil(x.mean())))
+	elif col1=="Only child" and col2=="Number of siblings":
+		temp=df[df[col2]==0]
+		temp[col1].fillna(value=1,inplace=True)
 		df.update(temp)
-		temp=df.dropna(subset=[col2])
-		temp[col1]=temp.groupby(col2)[col1].apply(lambda x:x.fillna(math.ceil(x.name*corr)))
+		temp=df[df[col2]>0]
+		temp[col1].fillna(value=0,inplace=True)
 		df.update(temp)
-	elif col2=="Age":
-		min=df[col2].min()
-		df[col1]=df[col1].fillna(-1)
-		df[col2]=df.groupby(col1)[col2].apply(lambda x:x.fillna(round((x.mean()-min)*corr+min)))
-		df[col1]=df[col1].replace(to_replace=-1,value=np.nan)
-		df[col1]=df.groupby(col2)[col1].apply(lambda x:x.fillna(round(x.mean()*corr)))
-	elif col2!="Gender":
-		temp=df.dropna(subset=[col1,col2],how='all')
-		min=df[col1].min()
-		temp=temp.dropna(subset=[col2])
-		temp[col1]=temp.groupby(col2)[col1].apply(lambda x:x.fillna(math.ceil((x.mean()-min)*corr+min)))
+		temp=df[df[col1]==1]
+		temp[col2].fillna(value=0,inplace=True)
 		df.update(temp)
-		min=df[col2].min()
-		temp=temp.dropna(subset=[col1])
-		temp[col2]=temp.groupby(col1)[col2].apply(lambda x:x.fillna(math.ceil((x.mean()-min)*corr+min)))
+		temp=df[df[col1]==0]
+		temp[col2].fillna(round(temp[col2].mean()),inplace=True)
 		df.update(temp)
 	else:
-		temp=df.dropna(subset=[col2])
-		min=df[col1].min()
-		temp[col1]=temp.groupby(col2)[col1].apply(lambda x:x.fillna(math.ceil((x.mean()-min)*corr+min)))
 		temp=df.dropna(subset=[col1])
-		temp[col2]=temp.groupby(col1)[col2].apply(lambda x:fill_ordinal(x))
+		temp[col2]=temp.groupby(col1)[col2].apply(lambda x:x.fillna(math.ceil(x.mean())))
+		df.update(temp)
+		temp=df.dropna(subset=[col2])
+		if col1=="Height" and col2=="Weight":
+			temp.drop(index=880,inplace=True)
+		temp[col1]=temp.groupby(col2)[col1].apply(lambda x:x.fillna(math.ceil(x.mean())))
 		df.update(temp)
 	return df
 
@@ -87,29 +82,29 @@ def fill_uncorr(df):
 			df[c]=fill_ordinal(df[c])
 	return df
 
+
 #find columns whose correlation is greater than 0.5
 def fill_corr_cols():
-	df=pd.read_csv("non_null_responses.csv")
+	df=pd.read_csv("replaced_responses.csv")
 	c=df.corr()
 	s = c.unstack()
-	so = s.sort_values(kind="quicksort")
-	values = [0 if i<0.50 else i for i in so ]
-	m1=list(filter(lambda a:a !=0,values))
-	values = [0 if i==1.0 else i for i in m1]
-	m2=list(filter(lambda a:a !=0,values))
-	s1=so[-len(m1):len(m2)-len(m1)].iloc[::2]
-	df=pd.read_csv("replaced_responses.csv")
-	for i in range(len(s1)-1,-1,-1):
-		col1=s1.index[i][0]
-		col2=s1.index[i][1]
+	so = s.abs().sort_values(ascending=False)
+	so=s[so.index]
+	so=so[abs(so)>0.43]
+	so=so[so!=1].iloc[::2]
+	#plots(so.sort_values(),0)
+	for i in range(0,len(so)):
+		col1=so.index[i][0]
+		col2=so.index[i][1]
 		df=to_fill(df,col1,col2)
 	df=fill_uncorr(df)
 	df.to_csv("filled_responses.csv",index=False)
 
-#map_values()
-#remove_null()
+#df=pd.read_csv("responses.csv")
+#describe(df)
+#map_values(df)
 #fill_corr_cols()
-#df=pd.read_csv("non_null_responses.csv")
+df=pd.read_csv("filled_responses.csv")
 '''music=df.iloc[:,0:19]
 movie=df.iloc[:,19:32]
 hobbies=df.iloc[:,32:64]
