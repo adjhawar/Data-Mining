@@ -68,7 +68,52 @@ def visual_l2(x):
 		count=count+1
 
 def visual_l3(x):
-	print("Health and traits left")
+	boys=x.sum()
+	girls=len(x)-boys
+	temp_male=[]
+	temp_female=[]
+	for i in good1:
+		if i=="Smoking" or i=="Alcohol" or i=="Punctuality" or i=="Lying" or i=="Internet usage":
+			like=df[df[i]==2]
+		else:			
+			like=df[df[i]>=4]
+		temp=like.groupby("Gender").count()[i]
+		temp_male.append(temp[1])
+		temp_female.append(temp[0])
+	indices = range(len(good1))
+	width = np.min(np.diff(indices))/3.
+	fig = plt.figure()
+	ax = fig.add_subplot(111)
+	ax.bar(indices-width/2.,temp_female/girls,width,color='b',label='Female')
+	ax.bar(indices+width/2.,temp_male/boys,width,color='r',label='Male')
+	ax.set_xticks(indices)
+	ax.axes.set_xticklabels(good1)
+	plt.xticks(rotation=90)
+	plt.legend(loc="upper right")
+	plt.title("Variation of good1 columns with Gender")
+	plt.show()
+
+def visual_l4(x):
+	boys=x.sum()
+	girls=len(x)-boys
+	temp_male=[]
+	temp_female=[]
+	for i in good2:
+		temp=df.groupby("Gender")[i].mean()
+		temp_male.append(temp[1])
+		temp_female.append(temp[0])
+	indices = range(len(good2))
+	width = np.min(np.diff(indices))/3.
+	fig = plt.figure()
+	ax = fig.add_subplot(111)
+	ax.bar(indices-width/2.,temp_female,width,color='b',label='Female')
+	ax.bar(indices+width/2.,temp_male,width,color='r',label='Male')
+	ax.set_xticks(indices)
+	ax.axes.set_xticklabels(good2)
+	plt.xticks(rotation=90)
+	plt.legend(loc="upper right")
+	plt.title("Variation of good2 columns with Gender")
+	plt.show()
 
 warnings.filterwarnings("ignore")
 df=pd.read_csv("filled_responses.csv")
@@ -86,6 +131,10 @@ demographics = df.ix[:,140:150]
 
 l1=[music,movies]
 l2=[interests,hobbies,phobias,health,traits1,traits2,traits3,spending]
+good1=['Life struggles', 'Romantic', 'Shopping', 'Reading', 'Spiders', 'Theatre', 'Darkness', 'Dancing', 'Storm', 'Fantasy/Fairy tales', 'Musical', 'Latino', 'Rats', 'Spending on gadgets', 'Physics', 'Sci-fi', 'Western', 'Science and technology', 'Action', 'War', 'Cars', 'PC']
+good2=["Height","Weight","BMI"]
 #visual_l1(df["Gender"])
-visual_l2(df["Gender"])
+#visual_l2(df["Gender"])
 #visual_l3(df["Gender"])
+#visual_l4(df["Gender"])
+
