@@ -29,6 +29,46 @@ def plots(so,flag):
 	if flag==0:
 		so.plot(kind='bar',color='slateblue')
 		plt.show()
+	elif flag==1:
+		col=["Height","Weight"]
+		plt.scatter(df[col[0]],df[col[1]])
+		plt.xlabel(col[0])
+		plt.ylabel(col[1])
+		plt.show()
+
+def change(x):
+	print(x.info())
+
+#rows that are incorrectly filled are modified
+def cheats(df):
+	col=["Only child","Number of siblings"]
+	'''groups=df.groupby(col)
+	for name,group in groups:
+		print(name,len(group))'''
+	for index,row in df.iterrows():
+		if row[col[1]]>0:
+			row[col[0]]=0
+		else:
+			row[col[0]]=1
+	'''groups=df.groupby(col)
+	for name,group in groups:
+		print(name,len(group))'''	
+	return df	
+
+#removes outliers from the data that do not satisfy our domain knowledge
+def outliers(df):
+	#plots(df,1)
+	remove=df[df["BMI"]>=40].index.values
+	df.drop(remove,inplace=True)
+	remove=df[df["Number of siblings"]>6].index.values
+	df.drop(remove,inplace=True)
+	df=cheats(df)
+	'''groups=df.groupby("Education")["Age"]
+	for name,group in groups:
+		print(name)
+		print(group.sort_values().unique())
+		print("######")'''
+	return df
 
 #fill ordinal missing values
 def fill_ordinal(df):
@@ -98,24 +138,13 @@ def fill_corr_cols():
 		col2=so.index[i][1]
 		df=to_fill(df,col1,col2)
 	df=fill_uncorr(df)
+	#adding a new column+
+	df["BMI"]=df.apply(lambda row:10000*row["Weight"]/(row["Height"]**2),axis=1)
+	df=outliers(df)
 	df.to_csv("filled_responses.csv",index=False)
-
+	
 #df=pd.read_csv("responses.csv")
-#describe(df)
 #map_values(df)
 #fill_corr_cols()
 df=pd.read_csv("filled_responses.csv")
-'''music=df.iloc[:,0:19]
-movie=df.iloc[:,19:32]
-hobbies=df.iloc[:,32:64]
-phobias=df.iloc[:,64:74]
-health=df.iloc[:,74:77]
-personality=df.iloc[:,77:134]
-spending=df.iloc[:,134:140]
-demography=df.iloc[:,140:151]
-
-music=music.merge(demography,how="outer",left_index=True,right_index=True)
-m_cols=music.columns
-groups=music.groupby(["Gender","Age"])
-for l in m_cols:
-	print(l,groups[l].mean())'''
+df.info()
