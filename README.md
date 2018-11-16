@@ -1,4 +1,4 @@
-The rows containing null values were removed.
+The rows containing null values for "Gender" are removed.
 
 The some data values contain String values. Those values were mapped to integers as:
 1. Smoking {'never smoked': 0, 'tried smoking': 1, 'current smoker': 2, 'former smoker': 3}
@@ -14,7 +14,5 @@ The some data values contain String values. Those values were mapped to integers
 11. House - block of flats {'block of flats': 0, 'house/bungalow': 1}
 
 Filling missing values
-The most correlated columns were found out using 0.5 as the threshold. The value to be used in case of eprfect correlation was multiplied with the correlation factor and then rounded up to the nearest integer in most cases of ordinal data.
-For handling continuous data like :"Age","Height" and "Weight", normalisation was used before multiplying by the correlation
-In case of binary data like "Gender", the distribution was found out in the each group and the value was filled using a biased bernoulli distribution.
-The uncorrelated ordinal values are similarly filled as the binary categories.
+The most correlated columns were found out using 0.43 as the threshold. The values are filled using the mean of the respective groups.
+The uncorrelated columns are filled using probability distribution
