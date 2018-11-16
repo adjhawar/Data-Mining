@@ -1,3 +1,16 @@
+					CS685A Project: Effect of Gender on Young People
+						Group 18
+Instructions:
+Responses.csv is the original data file and columns.csv contains the description of all the column names. Filled responses is the file  which contains the data after missing values are filled and outliers are  removed. 
+
+1. Run python preprocess.py
+ 
+2. Run correlation.py
+
+Correlation.py contains three functions. First one is corr_plot which does feature reduction on the basis of correlation and finds the good features which are stored in variable features. Second one is classification, which builds different classifiers from the important features and tries to predict the gender. Their respective accuracies are calculated.  
+
+Data PreProcessing
+
 The rows containing null values for "Gender" are removed.
 
 The some data values contain String values. Those values were mapped to integers as:

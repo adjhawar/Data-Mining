@@ -12,6 +12,7 @@ def warn(*args, **kwargs):
 warnings.warn = warn
 
 from sklearn.svm import SVC 
+from sklearn.neural_network import MLPClassifier as NN
 from sklearn.linear_model import LogisticRegression as lr
 from sklearn.utils import resample
 from sklearn.model_selection import train_test_split as tts
@@ -30,8 +31,9 @@ def corr_plot():
 	corr = df.corrwith(df['Gender'])
 	corr = corr.sort_values()[:-1]            # The last value is for the gender column itself which is not needed
 	corr = corr[abs(corr) >= CORR_THRESHOLD]
+	corr = corr.drop("Weight")
 	features = list(corr.index)
-	#cmap = sns.diverging_palette(220,10,as_cmap=False)
+	cmap = sns.diverging_palette(220,10,as_cmap=False)
 	#sns.barplot(corr.values,corr.index )
 	#plt.show()
 	
@@ -39,21 +41,11 @@ def classification():
 	global feat_val
 	cols = features + ["Gender"]
 	data = df[cols]
-	data_bal=data
-
-	'''data_male = data[data['Gender']==1]
-	data_female = data[data['Gender']==0]
-	print("Distribution of Gender")
-	print(data['Gender'].value_counts())
-	print("As we can see that there is class imbalance between the two classes, we will use resampling to increase the size of male class, so that classification algorithms are not biased")
-	data_male_extra = resample(data_male , replace=True , n_samples = 179 , random_state =23)
-	data_bal = pd.concat([data_female, data_male , data_male_extra])
-	print("After resampling:")
-	print(data_bal['Gender'].value_counts())'''
+	data_bal=data	
 	x = np.array(data_bal.iloc[:,:-1])
 	y = np.array(data_bal.iloc[:,-1])
 	x_train, x_test, y_train, y_test = tts(x,y,test_size = 0.25,random_state=23)
-	classifiers = [rfc(n_estimators=100,random_state=23) , lr(random_state = 23) , SVC(random_state=23)]
+	classifiers = [rfc(n_estimators=100,random_state=23) , lr(random_state = 23) , SVC(random_state=23) ]
 	methods = ["Random Forest Classifier" , "Logistic Regression" , "Support Vector Machines"]
 	print("We are using the K-fold cross-validation for estimating accuracy of the models ")
 	print("The accuracy mean with its 95% confidence interval for different methods is as follows")
@@ -72,10 +64,10 @@ def classification():
 
 def feat_plot():
 	global feat_val
-	imp_feat = pd.DataFrame(feat_val , index=features , columns=["value"])
-	imp_feat = imp_feat.sort_values(by = ["value"])
-	sns.barplot(imp_feat["value"],imp_feat.index)
-	plt.show()
+	imp_feat = pd.DataFrame(feat_val , index=features , columns=["Importance"])
+	imp_feat = imp_feat.sort_values(by = ["Importance"])
+	#sns.barplot(imp_feat["Importance"],imp_feat.index)
+	#plt.show()
 
 corr_plot()
 classification()
