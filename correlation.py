@@ -19,6 +19,7 @@ from sklearn.ensemble import RandomForestClassifier as rfc
 from sklearn.metrics import balanced_accuracy_score as bac
 from sklearn.model_selection import cross_val_score as cvs
 
+warnings.filterwarnings("ignore")
 CORR_THRESHOLD = 0.25
 df= pd.read_csv("filled_responses.csv")
 features = []
@@ -33,11 +34,13 @@ def corr_plot():
 	#cmap = sns.diverging_palette(220,10,as_cmap=False)
 	#sns.barplot(corr.values,corr.index )
 	#plt.show()
-
+	
 def classification():
 	global feat_val
 	cols = features + ["Gender"]
-	data_bal = df[cols]
+	data = df[cols]
+	data_bal=data
+
 	'''data_male = data[data['Gender']==1]
 	data_female = data[data['Gender']==0]
 	print("Distribution of Gender")
@@ -65,7 +68,7 @@ def classification():
 		#acc = bac(y_test,y_pred)
 		#print("Accuracy : {}".format(acc))
 		acc = cvs(clf , x,y, cv = 5)
-		#print("Accuracy: %0.4f (+/- %0.2f)" % (acc.mean(), acc.std() * 2))
+		print("Accuracy: %0.4f (+/- %0.2f)" % (acc.mean(), acc.std() * 2))
 
 def feat_plot():
 	global feat_val
@@ -77,5 +80,6 @@ def feat_plot():
 corr_plot()
 classification()
 feat_plot()
+
 
 
