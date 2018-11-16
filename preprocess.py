@@ -43,6 +43,8 @@ def cheats(df):
 	for name,group in groups:
 		print(name,len(group))'''
 	for index,row in df.iterrows():
+		if row[col[1]]==1 and row[col[0]]==0:
+			row[col[1]]=0
 		if row[col[1]]>0:
 			row[col[0]]=0
 		else:
@@ -142,5 +144,4 @@ def fill_corr_cols():
 	
 #df=pd.read_csv("responses.csv")
 #map_values(df)
-#fill_corr_cols()
-df=pd.read_csv("filled_responses.csv")
+fill_corr_cols()
