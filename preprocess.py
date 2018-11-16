@@ -6,6 +6,9 @@ import matplotlib.pyplot as plt
 import warnings
 import math
 
+CORR_THRESHOLD = 0.25
+#good_ones = pd.DataFrame()
+
 warnings.filterwarnings("ignore")
 #map strings to ordinal numbers and remove rows containing null values in "Gender" column
 def map_values(df):
@@ -100,13 +103,14 @@ def fill_corr_cols():
 	df=fill_uncorr(df)
 	df.to_csv("filled_responses.csv",index=False)
 
+
+
 #df=pd.read_csv("responses.csv")
 #describe(df)
 #map_values(df)
 #fill_corr_cols()
 df=pd.read_csv("filled_responses.csv")
-'''music=df.iloc[:,0:19]
->>>>>>> 16f026cec82f751de38c8c4a579aa36a2e9d71e5
+music=df.iloc[:,0:19]
 movie=df.iloc[:,19:32]
 hobbies=df.iloc[:,32:64]
 phobias=df.iloc[:,64:74]
@@ -114,8 +118,8 @@ health=df.iloc[:,74:77]
 personality=df.iloc[:,77:134]
 spending=df.iloc[:,134:140]
 demography=df.iloc[:,140:151]
-'''
-music=music.merge(demography,how="outer",left_index=True,right_index=True)
+
+'''music=music.merge(demography,how="outer",left_index=True,right_index=True)
 m_cols=music.columns
 groups=music.groupby(["Gender","Age"])
 for l in m_cols:
