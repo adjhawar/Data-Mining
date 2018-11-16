@@ -109,8 +109,8 @@ def fill_corr_cols():
 #map_values()
 #remove_null()
 #fill_corr_cols()
-#df=pd.read_csv("non_null_responses.csv")
-'''music=df.iloc[:,0:19]
+df=pd.read_csv("responses.csv")
+music=df.iloc[:,0:19]
 movie=df.iloc[:,19:32]
 hobbies=df.iloc[:,32:64]
 phobias=df.iloc[:,64:74]
@@ -118,7 +118,7 @@ health=df.iloc[:,74:77]
 personality=df.iloc[:,77:134]
 spending=df.iloc[:,134:140]
 demography=df.iloc[:,140:151]
-
+'''
 music=music.merge(demography,how="outer",left_index=True,right_index=True)
 m_cols=music.columns
 groups=music.groupby(["Gender","Age"])
