@@ -36,9 +36,6 @@ def plots(so,flag):
 		plt.ylabel(col[1])
 		plt.show()
 
-def change(x):
-	print(x.info())
-
 #rows that are incorrectly filled are modified
 def cheats(df):
 	col=["Only child","Number of siblings"]
@@ -147,4 +144,3 @@ def fill_corr_cols():
 #map_values(df)
 #fill_corr_cols()
 df=pd.read_csv("filled_responses.csv")
-df.info()
