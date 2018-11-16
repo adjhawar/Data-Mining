@@ -32,7 +32,7 @@ def plots(so,flag):
 		plt.show()
 	elif flag==1:
 		col=["Height","Weight"]
-		plt.scatter(df[col[0]],df[col[1]])
+		plt.scatter(so[col[0]],so[col[1]])
 		plt.xlabel(col[0])
 		plt.ylabel(col[1])
 		plt.show()
@@ -143,12 +143,11 @@ def fill_corr_cols():
 	df=outliers(df)
 	df.to_csv("filled_responses.csv",index=False)
 
-#df=pd.read_csv("responses.csv")
-#map_values(df)
+df=pd.read_csv("responses.csv")
+map_values(df)
 fill_corr_cols()
-
-'''df=pd.read_csv("filled_responses.csv")
-
+df=pd.read_csv("filled_responses.csv")
+'''
 music=df.iloc[:,0:19]
 movie=df.iloc[:,19:32]
 hobbies=df.iloc[:,32:64]

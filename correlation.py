@@ -63,7 +63,7 @@ def classification():
 	
 
 corr_plot()
-classification()
+#classification()
 print(features)
 	
 
