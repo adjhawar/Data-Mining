@@ -90,7 +90,6 @@ def visual_l3(x):
 	ax.axes.set_xticklabels(good1)
 	plt.xticks(rotation=90)
 	plt.legend(loc="upper right")
-	plt.title("Variation of good1 columns with Gender")
 	plt.show()
 
 def visual_l4(x):
@@ -112,7 +111,6 @@ def visual_l4(x):
 	ax.axes.set_xticklabels(good2)
 	plt.xticks(rotation=90)
 	plt.legend(loc="upper right")
-	plt.title("Variation of good2 columns with Gender")
 	plt.show()
 
 warnings.filterwarnings("ignore")
@@ -135,6 +133,6 @@ good1=['Life struggles', 'Romantic', 'Shopping', 'Reading', 'Spiders', 'Theatre'
 good2=["Height","Weight","BMI"]
 #visual_l1(df["Gender"])
 #visual_l2(df["Gender"])
-#visual_l3(df["Gender"])
-#visual_l4(df["Gender"])
+visual_l3(df["Gender"])
+visual_l4(df["Gender"])
 
