@@ -6,10 +6,11 @@ import matplotlib.pyplot as plt
 import warnings
 import math
 from sklearn.utils import resample
-from sklearn.cross_validation import train_test_split as tts
+from sklearn.model_selection import train_test_split as tts
 from sklearn.ensemble import RandomForestClassifier as rfc
 from sklearn.metrics import recall_score
 
+warnings.filterwarnings("ignore")
 CORR_THRESHOLD = 0.25
 df= pd.read_csv("filled_responses.csv")
 features = []
@@ -23,11 +24,10 @@ def corr_plot():
 	sns.barplot(corr.values,corr.index)
 	#plt.show()
 	
-
-
 def classification():
 	cols = features + ["Gender"]
 	data = df[cols]
+	#data_bal=data
 	data_male = data[data['Gender']==1]
 	data_female = data[data['Gender']==0]
 	print("Distribution of Gender")
@@ -46,8 +46,10 @@ def classification():
 	acc = recall_score(y_test, y_pred , average=None).mean()
 	print("The mean of recall score of individual classes is :{}".format(acc))
 	
+
 corr_plot()
 classification()
+print(features)
 	
 
 
