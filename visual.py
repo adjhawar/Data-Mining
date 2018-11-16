@@ -136,5 +136,5 @@ good2=["Height","Weight","BMI"]
 #visual_l1(df["Gender"])
 #visual_l2(df["Gender"])
 #visual_l3(df["Gender"])
-visual_l4(df["Gender"])
+#visual_l4(df["Gender"])
 
